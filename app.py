@@ -45,6 +45,31 @@ def view_applications():
 
     print("\n---------------------------------")
 
+def update_status():
+    if not applications:
+        print("\nNo applications found.")
+        return
+
+    view_applications()
+
+    try:
+        number = int(input("\nEnter application number: "))
+
+        if number < 1 or number > len(applications):
+            print("Invalid application number.")
+            return
+
+        new_status = input(
+            "Enter new status (Applied/Interview/Selected/Rejected/Withdrawn): "
+        )
+
+        applications[number - 1]["status"] = new_status
+
+        print("Application status updated successfully!")
+
+    except ValueError:
+        print("Please enter a valid number.")
+
 
 def main():
     running = True
@@ -61,7 +86,7 @@ def main():
             view_applications()
 
         elif choice == "3":
-            print("Update Status selected")
+            update_status()
 
         elif choice == "4":
             print("Delete Application selected")
