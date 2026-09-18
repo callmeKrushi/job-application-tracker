@@ -96,6 +96,37 @@ def delete_application():
         print("Please enter a valid number.")
 
 
+def search_applications():
+    if not applications:
+        print("\nNo applications found.")
+        return
+
+    search_term = input("Enter company name or job role to search: ").lower()
+
+    found = False
+
+    print("\n---------------------------------")
+    print("       Search Results")
+    print("---------------------------------")
+
+    for index, application in enumerate(applications, start=1):
+        company = application["company"].lower()
+        role = application["role"].lower()
+
+        if search_term in company or search_term in role:
+            print(f"\n{index}. {application['company']}")
+            print(f"   Role: {application['role']}")
+            print(f"   Status: {application['status']}")
+
+            found = True
+
+    if not found:
+        print("\nNo matching applications found.")
+
+    print("\n---------------------------------")
+
+
+
 
 def main():
     running = True
@@ -118,7 +149,7 @@ def main():
             delete_application()
 
         elif choice == "5":
-            print("Search Applications selected")
+            search_applications()
 
         elif choice == "6":
             print("Thank you for using Job Application Tracker!")
