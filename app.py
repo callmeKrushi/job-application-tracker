@@ -1,3 +1,6 @@
+applications = []
+
+
 def show_menu():
     print("\n=================================")
     print("     JOB APPLICATION TRACKER")
@@ -10,6 +13,22 @@ def show_menu():
     print("6. Exit")
 
 
+def add_application():
+    company = input("Enter company name: ")
+    role = input("Enter job role: ")
+    status = input("Enter application status: ")
+
+    application = {
+        "company": company,
+        "role": role,
+        "status": status
+    }
+
+    applications.append(application)
+
+    print("Application added successfully!")
+
+
 def main():
     running = True
 
@@ -19,7 +38,7 @@ def main():
         choice = input("Enter your choice: ")
 
         if choice == "1":
-            print("Add Application selected")
+            add_application()
 
         elif choice == "2":
             print("View Applications selected")
