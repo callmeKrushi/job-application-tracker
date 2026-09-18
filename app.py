@@ -71,6 +71,32 @@ def update_status():
         print("Please enter a valid number.")
 
 
+def delete_application():
+    if not applications:
+        print("\nNo applications found.")
+        return
+
+    view_applications()
+
+    try:
+        number = int(input("\nEnter application number to delete: "))
+
+        if number < 1 or number > len(applications):
+            print("Invalid application number.")
+            return
+
+        deleted_application = applications.pop(number - 1)
+
+        print(
+            f"Application for {deleted_application['company']} "
+            "deleted successfully!"
+        )
+
+    except ValueError:
+        print("Please enter a valid number.")
+
+
+
 def main():
     running = True
 
@@ -89,7 +115,7 @@ def main():
             update_status()
 
         elif choice == "4":
-            print("Delete Application selected")
+            delete_application()
 
         elif choice == "5":
             print("Search Applications selected")
