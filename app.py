@@ -1,4 +1,20 @@
-applications = []
+import json
+
+FILE_NAME = "data/applications.json"
+
+def load_applications():
+    try:
+        with open(FILE_NAME, "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+def save_applications():
+    with open(FILE_NAME, "w") as file:
+        json.dump(applications, file, indent=4)
+
+
+applications = load_applications()
 
 
 def show_menu():
@@ -25,6 +41,8 @@ def add_application():
     }
 
     applications.append(application)
+
+    save_applications()
 
     print("Application added successfully!")
 
@@ -65,6 +83,8 @@ def update_status():
 
         applications[number - 1]["status"] = new_status
 
+        save_applications()
+
         print("Application status updated successfully!")
 
     except ValueError:
@@ -86,6 +106,8 @@ def delete_application():
             return
 
         deleted_application = applications.pop(number - 1)
+
+        save_applications()
 
         print(
             f"Application for {deleted_application['company']} "
