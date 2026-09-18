@@ -29,6 +29,23 @@ def add_application():
     print("Application added successfully!")
 
 
+def view_applications():
+    if not applications:
+        print("\nNo applications found.")
+        return
+
+    print("\n---------------------------------")
+    print("         Applications")
+    print("---------------------------------")
+
+    for index, application in enumerate(applications, start=1):
+        print(f"\n{index}. {application['company']}")
+        print(f"   Role: {application['role']}")
+        print(f"   Status: {application['status']}")
+
+    print("\n---------------------------------")
+
+
 def main():
     running = True
 
@@ -41,7 +58,7 @@ def main():
             add_application()
 
         elif choice == "2":
-            print("View Applications selected")
+            view_applications()
 
         elif choice == "3":
             print("Update Status selected")
