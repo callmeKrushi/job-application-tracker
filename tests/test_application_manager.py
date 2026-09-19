@@ -346,3 +346,94 @@ def test_sort_applications_oldest_first(monkeypatch, capsys):
 
     assert google_position < amazon_position
     assert amazon_position < microsoft_position
+
+def test_edit_application(monkeypatch):
+    applications = [
+        {
+            "company": "Google",
+            "role": "Software Engineer",
+            "status": "Applied",
+            "date_applied": "2026-09-19"
+        }
+    ]
+
+    inputs = iter([
+        "1",
+        "Microsoft",
+        "Data Scientist",
+        "Interview"
+    ])
+
+    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
+    monkeypatch.setattr(
+        "application_manager.save_applications",
+        lambda applications: None
+    )
+
+    application_manager.edit_application(applications)
+
+    assert applications[0]["company"] == "Microsoft"
+    assert applications[0]["role"] == "Data Scientist"
+    assert applications[0]["status"] == "Interview"
+    assert applications[0]["date_applied"] == "2026-09-19"
+
+
+def test_edit_application_keep_existing_values(monkeypatch):
+    applications = [
+        {
+            "company": "Google",
+            "role": "Software Engineer",
+            "status": "Applied",
+            "date_applied": "2026-09-19"
+        }
+    ]
+
+    inputs = iter([
+        "1",
+        "",
+        "",
+        ""
+    ])
+
+    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
+    monkeypatch.setattr(
+        "application_manager.save_applications",
+        lambda applications: None
+    )
+
+    application_manager.edit_application(applications)
+
+    assert applications[0]["company"] == "Google"
+    assert applications[0]["role"] == "Software Engineer"
+    assert applications[0]["status"] == "Applied"
+    assert applications[0]["date_applied"] == "2026-09-19"
+
+
+def test_edit_application_invalid_status(monkeypatch):
+    applications = [
+        {
+            "company": "Google",
+            "role": "Software Engineer",
+            "status": "Applied",
+            "date_applied": "2026-09-19"
+        }
+    ]
+
+    inputs = iter([
+        "1",
+        "Microsoft",
+        "Data Scientist",
+        "RandomStatus"
+    ])
+
+    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
+    monkeypatch.setattr(
+        "application_manager.save_applications",
+        lambda applications: None
+    )
+
+    application_manager.edit_application(applications)
+
+    assert applications[0]["company"] == "Google"
+    assert applications[0]["role"] == "Software Engineer"
+    assert applications[0]["status"] == "Applied"

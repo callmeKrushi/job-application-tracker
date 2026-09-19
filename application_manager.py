@@ -117,6 +117,74 @@ def delete_application(applications):
         print("Please enter a valid number.")
 
 
+
+def edit_application(applications):
+    if not applications:
+        print("\nNo applications found.")
+        return
+
+    view_applications(applications)
+
+    try:
+        number = int(input("\nEnter application number to edit: "))
+
+        if number < 1 or number > len(applications):
+            print("Invalid application number.")
+            return
+
+        application = applications[number - 1]
+
+        company = input(
+            f"Enter new company name [{application['company']}]: "
+        ).strip()
+
+        role = input(
+            f"Enter new job role [{application['role']}]: "
+        ).strip()
+
+        status = input(
+            f"Enter new status [{application['status']}]: "
+        ).strip()
+
+        # Keep old values by default
+        new_company = application["company"]
+        new_role = application["role"]
+        new_status = application["status"]
+
+        # Update company if user entered something
+        if company:
+            new_company = normalize_text(company)
+
+        # Update role if user entered something
+        if role:
+            new_role = normalize_text(role)
+
+        # Update status if user entered something
+        if status:
+            validated_status = validate_status(status)
+
+            if validated_status is None:
+                print("Invalid application status.")
+                return
+
+            new_status = validated_status
+
+        # Apply changes only after validation
+        application["company"] = new_company
+        application["role"] = new_role
+        application["status"] = new_status
+
+        # Date is NOT changed
+        save_applications(applications)
+
+        print("Application updated successfully!")
+
+    except ValueError:
+        print("Please enter a valid number.")
+
+
+
+
 def search_applications(applications):
     if not applications:
         print("\nNo applications found.")
