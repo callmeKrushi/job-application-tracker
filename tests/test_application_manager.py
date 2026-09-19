@@ -7,6 +7,11 @@ def test_add_application(monkeypatch, tmp_path):
     inputs = iter([
         "Google",
         "Python Developer",
+        "Hyderabad",
+        "Full-time",
+        "12 LPA",
+        "https://example.com",
+        "Referral",
         "Applied"
     ])
 
@@ -39,6 +44,11 @@ def test_update_status(monkeypatch):
         {
             "company": "Google",
             "role": "Python Developer",
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
             "status": "Applied",
             "date_applied": "2026-09-19"
         }
@@ -69,6 +79,11 @@ def test_update_status_invalid_number(monkeypatch):
         {
             "company": "Google",
             "role": "Python Developer",
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
             "status": "Applied",
             "date_applied": "2026-09-19"
         }
@@ -91,12 +106,22 @@ def test_delete_application(monkeypatch):
         {
             "company": "Google",
             "role": "Python Developer",
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
             "status": "Applied",
             "date_applied": "2026-09-19"
         },
         {
             "company": "Microsoft",
             "role": "Data Scientist",
+            "location": "Bangalore",
+            "job_type": "Full-time",
+            "salary": "15 LPA",
+            "job_url": "https://microsoft.com/job",
+            "notes": "Applied through referral",
             "status": "Interview",
             "date_applied": "2026-09-19"
         }
@@ -125,6 +150,11 @@ def test_delete_application_invalid_number(monkeypatch):
         {
             "company": "Google",
             "role": "Python Developer",
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
             "status": "Applied",
             "date_applied": "2026-09-19"
         }
@@ -147,12 +177,24 @@ def test_search_applications(monkeypatch, capsys):
         {
             "company": "Google",
             "role": "Python Developer",
-            "status": "Applied"
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
+            "status": "Applied",
+            "date_applied": "2026-09-15"
         },
         {
             "company": "Microsoft",
             "role": "Data Scientist",
-            "status": "Interview"
+            "location": "Bangalore",
+            "job_type": "Full-time",
+            "salary": "15 LPA",
+            "job_url": "https://microsoft.com/job",
+            "notes": "Applied through referral",
+            "status": "Interview",
+            "date_applied": "2026-09-15"
         }
     ]
 
@@ -169,13 +211,18 @@ def test_search_applications(monkeypatch, capsys):
     assert "Python Developer" in output
 
 
-
 def test_search_no_results(monkeypatch, capsys):
     applications = [
         {
             "company": "Google",
             "role": "Python Developer",
-            "status": "Applied"
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
+            "status": "Applied",
+            "date_applied": "2026-09-15"
         }
     ]
 
@@ -191,12 +238,18 @@ def test_search_no_results(monkeypatch, capsys):
     assert "No matching applications found." in output
 
 
+
 def test_add_application_normalizes_input(monkeypatch):
     applications = []
 
     inputs = iter([
         "   google   ",
         "   machine    learning   engineer   ",
+        "",
+        "",
+        "",
+        "",
+        "",
         "   applied   "
     ])
 
@@ -218,22 +271,41 @@ def test_add_application_normalizes_input(monkeypatch):
     assert "date_applied" in applications[0]
 
 
+
 def test_filter_applications(monkeypatch, capsys):
     applications = [
         {
             "company": "Google",
             "role": "Python Developer",
-            "status": "Applied"
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
+            "status": "Applied",
+            "date_applied": "2026-09-15"
         },
         {
             "company": "Microsoft",
             "role": "Data Scientist",
-            "status": "Interview"
+            "location": "Bangalore",
+            "job_type": "Full-time",
+            "salary": "15 LPA",
+            "job_url": "https://microsoft.com/job",
+            "notes": "Applied through referral",
+            "status": "Interview",
+            "date_applied": "2026-09-15"
         },
         {
             "company": "Amazon",
             "role": "ML Engineer",
-            "status": "Applied"
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "14 LPA",
+            "job_url": "https://amazon.com/job",
+            "notes": "Applied online",
+            "status": "Applied",
+            "date_applied": "2026-09-15"
         }
     ]
 
@@ -256,7 +328,13 @@ def test_filter_applications_no_results(monkeypatch, capsys):
         {
             "company": "Google",
             "role": "Python Developer",
-            "status": "Applied"
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
+            "status": "Applied",
+            "date_applied": "2026-09-15"
         }
     ]
 
@@ -271,23 +349,40 @@ def test_filter_applications_no_results(monkeypatch, capsys):
 
     assert "No applications with status 'Selected' found." in output
 
+
+
 def test_sort_applications_newest_first(monkeypatch, capsys):
     applications = [
         {
             "company": "Google",
             "role": "Python Developer",
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
             "status": "Applied",
             "date_applied": "2026-09-10"
         },
         {
             "company": "Microsoft",
             "role": "Data Scientist",
+            "location": "Bangalore",
+            "job_type": "Full-time",
+            "salary": "15 LPA",
+            "job_url": "https://microsoft.com/job",
+            "notes": "Applied through referral",
             "status": "Interview",
             "date_applied": "2026-09-18"
         },
         {
             "company": "Amazon",
             "role": "ML Engineer",
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "14 LPA",
+            "job_url": "https://amazon.com/job",
+            "notes": "Applied online",
             "status": "Applied",
             "date_applied": "2026-09-15"
         }
@@ -309,23 +404,39 @@ def test_sort_applications_newest_first(monkeypatch, capsys):
     assert microsoft_position < amazon_position
     assert amazon_position < google_position
 
+
 def test_sort_applications_oldest_first(monkeypatch, capsys):
     applications = [
         {
             "company": "Google",
             "role": "Python Developer",
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
             "status": "Applied",
             "date_applied": "2026-09-10"
         },
         {
             "company": "Microsoft",
             "role": "Data Scientist",
+            "location": "Bangalore",
+            "job_type": "Full-time",
+            "salary": "15 LPA",
+            "job_url": "https://microsoft.com/job",
+            "notes": "Applied through referral",
             "status": "Interview",
             "date_applied": "2026-09-18"
         },
         {
             "company": "Amazon",
             "role": "ML Engineer",
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "14 LPA",
+            "job_url": "https://amazon.com/job",
+            "notes": "Applied online",
             "status": "Applied",
             "date_applied": "2026-09-15"
         }
@@ -347,11 +458,18 @@ def test_sort_applications_oldest_first(monkeypatch, capsys):
     assert google_position < amazon_position
     assert amazon_position < microsoft_position
 
+
+
 def test_edit_application(monkeypatch):
     applications = [
         {
             "company": "Google",
             "role": "Software Engineer",
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
             "status": "Applied",
             "date_applied": "2026-09-19"
         }
@@ -361,10 +479,19 @@ def test_edit_application(monkeypatch):
         "1",
         "Microsoft",
         "Data Scientist",
+        "Bangalore",
+        "Full-time",
+        "15 LPA",
+        "https://microsoft.com/job",
+        "Referred by friend",
         "Interview"
     ])
 
-    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda _: next(inputs)
+    )
+
     monkeypatch.setattr(
         "application_manager.save_applications",
         lambda applications: None
@@ -374,8 +501,14 @@ def test_edit_application(monkeypatch):
 
     assert applications[0]["company"] == "Microsoft"
     assert applications[0]["role"] == "Data Scientist"
+    assert applications[0]["location"] == "Bangalore"
+    assert applications[0]["job_type"] == "Full-time"
+    assert applications[0]["salary"] == "15 LPA"
+    assert applications[0]["job_url"] == "https://microsoft.com/job"
+    assert applications[0]["notes"] == "Referred by friend"
     assert applications[0]["status"] == "Interview"
     assert applications[0]["date_applied"] == "2026-09-19"
+
 
 
 def test_edit_application_keep_existing_values(monkeypatch):
@@ -383,6 +516,11 @@ def test_edit_application_keep_existing_values(monkeypatch):
         {
             "company": "Google",
             "role": "Software Engineer",
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
             "status": "Applied",
             "date_applied": "2026-09-19"
         }
@@ -392,10 +530,19 @@ def test_edit_application_keep_existing_values(monkeypatch):
         "1",
         "",
         "",
+        "",
+        "",
+        "",
+        "",
+        "",
         ""
     ])
 
-    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda _: next(inputs)
+    )
+
     monkeypatch.setattr(
         "application_manager.save_applications",
         lambda applications: None
@@ -405,8 +552,14 @@ def test_edit_application_keep_existing_values(monkeypatch):
 
     assert applications[0]["company"] == "Google"
     assert applications[0]["role"] == "Software Engineer"
+    assert applications[0]["location"] == "Hyderabad"
+    assert applications[0]["job_type"] == "Full-time"
+    assert applications[0]["salary"] == "12 LPA"
+    assert applications[0]["job_url"] == "https://example.com"
+    assert applications[0]["notes"] == "Referral"
     assert applications[0]["status"] == "Applied"
     assert applications[0]["date_applied"] == "2026-09-19"
+
 
 
 def test_edit_application_invalid_status(monkeypatch):
@@ -414,6 +567,11 @@ def test_edit_application_invalid_status(monkeypatch):
         {
             "company": "Google",
             "role": "Software Engineer",
+            "location": "Hyderabad",
+            "job_type": "Full-time",
+            "salary": "12 LPA",
+            "job_url": "https://example.com",
+            "notes": "Referral",
             "status": "Applied",
             "date_applied": "2026-09-19"
         }
@@ -423,10 +581,19 @@ def test_edit_application_invalid_status(monkeypatch):
         "1",
         "Microsoft",
         "Data Scientist",
+        "Bangalore",
+        "Full-time",
+        "15 LPA",
+        "https://microsoft.com/job",
+        "New notes",
         "RandomStatus"
     ])
 
-    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda _: next(inputs)
+    )
+
     monkeypatch.setattr(
         "application_manager.save_applications",
         lambda applications: None
@@ -436,4 +603,5 @@ def test_edit_application_invalid_status(monkeypatch):
 
     assert applications[0]["company"] == "Google"
     assert applications[0]["role"] == "Software Engineer"
+    assert applications[0]["location"] == "Hyderabad"
     assert applications[0]["status"] == "Applied"

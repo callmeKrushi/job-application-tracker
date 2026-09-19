@@ -1,26 +1,46 @@
 [
     {
-        "company": "Google",
-        "role": "Python Developer",
-        "status": "Applied",
-        "date_applied": "2026-09-19"
-    },
-    {
         "company": "Meta",
         "role": "Java Developer",
+        "location": "HYD",
+        "job_type": "On-site",
+        "salary": "22LPA",
+        "job_url": "",
+        "notes": "",
         "status": "Applied",
         "date_applied": "2026-04-15"
     },
     {
         "company": "JP Morgan",
         "role": "Backend Developer",
-        "status": "Applied",
+        "location": "",
+        "job_type": "",
+        "salary": "",
+        "job_url": "",
+        "notes": "",
+        "status": "interview",
         "date_applied": "2026-08-12"
     },
     {
         "company": "Zoho",
         "role": "Backend Developer",
+        "location": "Mumbai",
+        "job_type": "On-Site",
+        "salary": "12LPA",
+        "job_url": "",
+        "notes": "",
         "status": "Rejected",
         "date_applied": "2026-09-10"
+    },
+    {
+        "company": "Google",
+        "role": "Intern",
+        "location": "HYD",
+        "job_type": "On-Site",
+        "salary": "2L",
+        "job_url": "www.google.careers.com",
+        "notes": "Saw this on Google Career portal",
+        "status": "Applied",
+        "date_applied": "2026-09-19"
     }
 ]

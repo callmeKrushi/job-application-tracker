@@ -9,24 +9,27 @@ from date_utils import get_current_date
 
 def add_application(applications):
     company = input("Enter company name: ")
+    role = input("Enter job role: ")
+    location = input("Enter location (optional): ")
+    job_type = input("Enter job type (optional): ")
+    salary = input("Enter salary (optional): ")
+    job_url = input("Enter job URL (optional): ")
+    notes = input("Enter notes (optional): ")
+    status = input(
+        "Enter application status "
+        "(Applied/Interview/Selected/Rejected/Withdrawn): "
+    )
 
     if not validate_text(company):
         print("Company name cannot be empty.")
         return
 
-    company = normalize_text(company)
-
-    role = input("Enter job role: ")
-
     if not validate_text(role):
         print("Job role cannot be empty.")
         return
 
+    company = normalize_text(company)
     role = normalize_text(role)
-
-    status = input(
-        "Enter application status (Applied/Interview/Selected/Rejected/Withdrawn): "
-    )
 
     validated_status = validate_status(status)
 
@@ -37,6 +40,11 @@ def add_application(applications):
     application = {
         "company": company,
         "role": role,
+        "location": location.strip(),
+        "job_type": job_type.strip(),
+        "salary": salary.strip(),
+        "job_url": job_url.strip(),
+        "notes": notes.strip(),
         "status": validated_status,
         "date_applied": get_current_date()
     }
@@ -46,22 +54,32 @@ def add_application(applications):
 
     print("Application added successfully!")
 
+def display_application(application, index=None):
+    if index is not None:
+        print(f"\nApplication {index}")
+
+    print(f"Company: {application['company']}")
+    print(f"Role: {application['role']}")
+    print(f"Location: {application['location']}")
+    print(f"Job Type: {application['job_type']}")
+    print(f"Salary: {application['salary']}")
+    print(f"Job URL: {application['job_url']}")
+    print(f"Notes: {application['notes']}")
+    print(f"Status: {application['status']}")
+    print(f"Date Applied: {application['date_applied']}")
+
+
+
 def view_applications(applications):
     if not applications:
         print("\nNo applications found.")
         return
 
-    print("\n---------------------------------")
-    print("         Applications")
-    print("---------------------------------")
+    print("\n--- Applications ---")
 
     for index, application in enumerate(applications, start=1):
-        print(f"\n{index}. {application['company']}")
-        print(f"   Role: {application['role']}")
-        print(f"   Status: {application['status']}")
-        print(f"   Date Applied: {application['date_applied']}")
+        display_application(application, index)
 
-    print("\n---------------------------------")
 
 
 def update_status(applications):
@@ -142,24 +160,61 @@ def edit_application(applications):
             f"Enter new job role [{application['role']}]: "
         ).strip()
 
+        location = input(
+            f"Enter new location [{application['location']}]: "
+        ).strip()
+
+        job_type = input(
+            f"Enter new job type [{application['job_type']}]: "
+        ).strip()
+
+        salary = input(
+            f"Enter new salary [{application['salary']}]: "
+        ).strip()
+
+        job_url = input(
+            f"Enter new job URL [{application['job_url']}]: "
+        ).strip()
+
+        notes = input(
+            f"Enter new notes [{application['notes']}]: "
+        ).strip()
+
         status = input(
             f"Enter new status [{application['status']}]: "
         ).strip()
 
-        # Keep old values by default
+        # Keep existing values if user presses Enter
         new_company = application["company"]
         new_role = application["role"]
+        new_location = application["location"]
+        new_job_type = application["job_type"]
+        new_salary = application["salary"]
+        new_job_url = application["job_url"]
+        new_notes = application["notes"]
         new_status = application["status"]
 
-        # Update company if user entered something
         if company:
             new_company = normalize_text(company)
 
-        # Update role if user entered something
         if role:
             new_role = normalize_text(role)
 
-        # Update status if user entered something
+        if location:
+            new_location = location
+
+        if job_type:
+            new_job_type = job_type
+
+        if salary:
+            new_salary = salary
+
+        if job_url:
+            new_job_url = job_url
+
+        if notes:
+            new_notes = notes
+
         if status:
             validated_status = validate_status(status)
 
@@ -169,12 +224,17 @@ def edit_application(applications):
 
             new_status = validated_status
 
-        # Apply changes only after validation
+        # Apply changes
         application["company"] = new_company
         application["role"] = new_role
+        application["location"] = new_location
+        application["job_type"] = new_job_type
+        application["salary"] = new_salary
+        application["job_url"] = new_job_url
+        application["notes"] = new_notes
         application["status"] = new_status
 
-        # Date is NOT changed
+        # Date Applied remains unchanged
         save_applications(applications)
 
         print("Application updated successfully!")
@@ -184,31 +244,25 @@ def edit_application(applications):
 
 
 
-
 def search_applications(applications):
     if not applications:
         print("\nNo applications found.")
         return
 
-    search_term = input(
-        "Enter company name or job role to search: "
-    ).lower()
+    search_term = input("Enter company or role to search: ").strip().lower()
 
     found = False
 
     print("\n---------------------------------")
-    print("       Search Results")
+    print("      Search Results")
     print("---------------------------------")
 
     for index, application in enumerate(applications, start=1):
-        company = application["company"].lower()
-        role = application["role"].lower()
-
-        if search_term in company or search_term in role:
-            print(f"\n{index}. {application['company']}")
-            print(f"   Role: {application['role']}")
-            print(f"   Status: {application['status']}")
-
+        if (
+            search_term in application["company"].lower()
+            or search_term in application["role"].lower()
+        ):
+            display_application(application, index)
             found = True
 
     if not found:
@@ -216,6 +270,7 @@ def search_applications(applications):
 
     print("\n---------------------------------")
 
+    
 
 def filter_applications(applications):
     if not applications:
@@ -241,10 +296,7 @@ def filter_applications(applications):
 
     for index, application in enumerate(applications, start=1):
         if application["status"] == status:
-            print(f"\n{index}. {application['company']}")
-            print(f"   Role: {application['role']}")
-            print(f"   Status: {application['status']}")
-
+            display_application(application, index)
             found = True
 
     if not found:
@@ -286,9 +338,6 @@ def sort_applications(applications):
     print("---------------------------------")
 
     for index, application in enumerate(sorted_applications, start=1):
-        print(f"\n{index}. {application['company']}")
-        print(f"   Role: {application['role']}")
-        print(f"   Status: {application['status']}")
-        print(f"   Date Applied: {application['date_applied']}")
+        display_application(application, index)
 
     print("\n---------------------------------")
