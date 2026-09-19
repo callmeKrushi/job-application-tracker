@@ -144,3 +144,39 @@ def search_applications(applications):
         print("\nNo matching applications found.")
 
     print("\n---------------------------------")
+
+
+def filter_applications(applications):
+    if not applications:
+        print("\nNo applications found.")
+        return
+
+    status = input(
+        "Enter status to filter "
+        "(Applied/Interview/Selected/Rejected/Withdrawn): "
+    )
+
+    status = validate_status(status)
+
+    if status is None:
+        print("Invalid application status.")
+        return
+
+    found = False
+
+    print("\n---------------------------------")
+    print("     Filtered Applications")
+    print("---------------------------------")
+
+    for index, application in enumerate(applications, start=1):
+        if application["status"] == status:
+            print(f"\n{index}. {application['company']}")
+            print(f"   Role: {application['role']}")
+            print(f"   Status: {application['status']}")
+
+            found = True
+
+    if not found:
+        print(f"\nNo applications with status '{status}' found.")
+
+    print("\n---------------------------------")

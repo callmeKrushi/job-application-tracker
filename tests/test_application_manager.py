@@ -209,3 +209,57 @@ def test_add_application_normalizes_input(monkeypatch):
     assert applications[0]["company"] == "Google"
     assert applications[0]["role"] == "Machine Learning Engineer"
     assert applications[0]["status"] == "Applied"
+
+
+def test_filter_applications(monkeypatch, capsys):
+    applications = [
+        {
+            "company": "Google",
+            "role": "Python Developer",
+            "status": "Applied"
+        },
+        {
+            "company": "Microsoft",
+            "role": "Data Scientist",
+            "status": "Interview"
+        },
+        {
+            "company": "Amazon",
+            "role": "ML Engineer",
+            "status": "Applied"
+        }
+    ]
+
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda _: "applied"
+    )
+
+    application_manager.filter_applications(applications)
+
+    output = capsys.readouterr().out
+
+    assert "Google" in output
+    assert "Amazon" in output
+    assert "Microsoft" not in output
+
+
+def test_filter_applications_no_results(monkeypatch, capsys):
+    applications = [
+        {
+            "company": "Google",
+            "role": "Python Developer",
+            "status": "Applied"
+        }
+    ]
+
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda _: "Selected"
+    )
+
+    application_manager.filter_applications(applications)
+
+    output = capsys.readouterr().out
+
+    assert "No applications with status 'Selected' found." in output

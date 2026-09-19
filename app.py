@@ -4,7 +4,8 @@ from application_manager import (
     view_applications,
     update_status,
     delete_application,
-    search_applications
+    search_applications,
+    filter_applications
 )
 
 
@@ -17,7 +18,8 @@ def show_menu():
     print("3. Update Status")
     print("4. Delete Application")
     print("5. Search Applications")
-    print("6. Exit")
+    print("6. Filter Applications")
+    print("7. Exit")
 
 
 def main():
@@ -46,11 +48,14 @@ def main():
             search_applications(applications)
 
         elif choice == "6":
+            filter_applications(applications)
+
+        elif choice == "7":
             print("Thank you for using Job Application Tracker!")
             running = False
 
         else:
-            print("Invalid choice. Please enter a number from 1 to 6.")
+            print("Invalid choice. Please enter a number from 1 to 7.")
 
 
 if __name__ == "__main__":
