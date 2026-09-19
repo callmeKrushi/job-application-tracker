@@ -31,6 +31,7 @@ def test_add_application(monkeypatch, tmp_path):
     assert applications[0]["company"] == "Google"
     assert applications[0]["role"] == "Python Developer"
     assert applications[0]["status"] == "Applied"
+    assert "date_applied" in applications[0]
 
 
 def test_update_status(monkeypatch):
@@ -38,7 +39,8 @@ def test_update_status(monkeypatch):
         {
             "company": "Google",
             "role": "Python Developer",
-            "status": "Applied"
+            "status": "Applied",
+            "date_applied": "2026-09-19"
         }
     ]
 
@@ -67,7 +69,8 @@ def test_update_status_invalid_number(monkeypatch):
         {
             "company": "Google",
             "role": "Python Developer",
-            "status": "Applied"
+            "status": "Applied",
+            "date_applied": "2026-09-19"
         }
     ]
 
@@ -88,12 +91,14 @@ def test_delete_application(monkeypatch):
         {
             "company": "Google",
             "role": "Python Developer",
-            "status": "Applied"
+            "status": "Applied",
+            "date_applied": "2026-09-19"
         },
         {
             "company": "Microsoft",
             "role": "Data Scientist",
-            "status": "Interview"
+            "status": "Interview",
+            "date_applied": "2026-09-19"
         }
     ]
 
@@ -120,7 +125,8 @@ def test_delete_application_invalid_number(monkeypatch):
         {
             "company": "Google",
             "role": "Python Developer",
-            "status": "Applied"
+            "status": "Applied",
+            "date_applied": "2026-09-19"
         }
     ]
 
@@ -209,6 +215,7 @@ def test_add_application_normalizes_input(monkeypatch):
     assert applications[0]["company"] == "Google"
     assert applications[0]["role"] == "Machine Learning Engineer"
     assert applications[0]["status"] == "Applied"
+    assert "date_applied" in applications[0]
 
 
 def test_filter_applications(monkeypatch, capsys):

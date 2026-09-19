@@ -4,6 +4,7 @@ from validation import (
     validate_text,
     validate_status
 )
+from date_utils import get_current_date
 
 
 def add_application(applications):
@@ -36,7 +37,8 @@ def add_application(applications):
     application = {
         "company": company,
         "role": role,
-        "status": validated_status
+        "status": validated_status,
+        "date_applied": get_current_date()
     }
 
     applications.append(application)
@@ -57,6 +59,7 @@ def view_applications(applications):
         print(f"\n{index}. {application['company']}")
         print(f"   Role: {application['role']}")
         print(f"   Status: {application['status']}")
+        print(f"   Date Applied: {application['date_applied']}")
 
     print("\n---------------------------------")
 
