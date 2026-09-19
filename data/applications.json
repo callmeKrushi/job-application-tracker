@@ -4,5 +4,26 @@
         "role": "Python Developer",
         "status": "Applied",
         "date_applied": "2026-09-19"
+    },
+
+    {
+        "company": "Meta",
+        "role": "Java Developer",
+        "status": "Applied",
+        "date_applied": "2026-04-15"
+    },
+
+    {
+        "company": "JP Morgan",
+        "role": "Backend Developer",
+        "status": "Applied",
+        "date_applied": "2026-08-12"
+    },
+
+    {
+        "company": "Zoho",
+        "role": "Full Stack Developer",
+        "status": "Interview",
+        "date_applied": "2026-09-10"
     }
 ]

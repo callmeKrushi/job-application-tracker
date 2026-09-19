@@ -183,3 +183,44 @@ def filter_applications(applications):
         print(f"\nNo applications with status '{status}' found.")
 
     print("\n---------------------------------")
+
+
+
+def sort_applications(applications):
+    if not applications:
+        print("\nNo applications found.")
+        return
+
+    print("\n1. Newest first")
+    print("2. Oldest first")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        sorted_applications = sorted(
+            applications,
+            key=lambda application: application["date_applied"],
+            reverse=True
+        )
+
+    elif choice == "2":
+        sorted_applications = sorted(
+            applications,
+            key=lambda application: application["date_applied"]
+        )
+
+    else:
+        print("Invalid choice.")
+        return
+
+    print("\n---------------------------------")
+    print("       Sorted Applications")
+    print("---------------------------------")
+
+    for index, application in enumerate(sorted_applications, start=1):
+        print(f"\n{index}. {application['company']}")
+        print(f"   Role: {application['role']}")
+        print(f"   Status: {application['status']}")
+        print(f"   Date Applied: {application['date_applied']}")
+
+    print("\n---------------------------------")

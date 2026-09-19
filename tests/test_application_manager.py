@@ -270,3 +270,79 @@ def test_filter_applications_no_results(monkeypatch, capsys):
     output = capsys.readouterr().out
 
     assert "No applications with status 'Selected' found." in output
+
+def test_sort_applications_newest_first(monkeypatch, capsys):
+    applications = [
+        {
+            "company": "Google",
+            "role": "Python Developer",
+            "status": "Applied",
+            "date_applied": "2026-09-10"
+        },
+        {
+            "company": "Microsoft",
+            "role": "Data Scientist",
+            "status": "Interview",
+            "date_applied": "2026-09-18"
+        },
+        {
+            "company": "Amazon",
+            "role": "ML Engineer",
+            "status": "Applied",
+            "date_applied": "2026-09-15"
+        }
+    ]
+
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda _: "1"
+    )
+
+    application_manager.sort_applications(applications)
+
+    output = capsys.readouterr().out
+
+    microsoft_position = output.index("Microsoft")
+    amazon_position = output.index("Amazon")
+    google_position = output.index("Google")
+
+    assert microsoft_position < amazon_position
+    assert amazon_position < google_position
+
+def test_sort_applications_oldest_first(monkeypatch, capsys):
+    applications = [
+        {
+            "company": "Google",
+            "role": "Python Developer",
+            "status": "Applied",
+            "date_applied": "2026-09-10"
+        },
+        {
+            "company": "Microsoft",
+            "role": "Data Scientist",
+            "status": "Interview",
+            "date_applied": "2026-09-18"
+        },
+        {
+            "company": "Amazon",
+            "role": "ML Engineer",
+            "status": "Applied",
+            "date_applied": "2026-09-15"
+        }
+    ]
+
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda _: "2"
+    )
+
+    application_manager.sort_applications(applications)
+
+    output = capsys.readouterr().out
+
+    google_position = output.index("Google")
+    amazon_position = output.index("Amazon")
+    microsoft_position = output.index("Microsoft")
+
+    assert google_position < amazon_position
+    assert amazon_position < microsoft_position
