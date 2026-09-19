@@ -1,22 +1,48 @@
 from storage import save_applications
+from validation import (
+    normalize_text,
+    validate_text,
+    validate_status
+)
 
 
 def add_application(applications):
     company = input("Enter company name: ")
+
+    if not validate_text(company):
+        print("Company name cannot be empty.")
+        return
+
+    company = normalize_text(company)
+
     role = input("Enter job role: ")
-    status = input("Enter application status: ")
+
+    if not validate_text(role):
+        print("Job role cannot be empty.")
+        return
+
+    role = normalize_text(role)
+
+    status = input(
+        "Enter application status (Applied/Interview/Selected/Rejected/Withdrawn): "
+    )
+
+    validated_status = validate_status(status)
+
+    if validated_status is None:
+        print("Invalid application status.")
+        return
 
     application = {
         "company": company,
         "role": role,
-        "status": status
+        "status": validated_status
     }
 
     applications.append(application)
     save_applications(applications)
 
     print("Application added successfully!")
-
 
 def view_applications(applications):
     if not applications:

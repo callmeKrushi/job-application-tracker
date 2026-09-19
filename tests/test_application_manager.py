@@ -183,3 +183,29 @@ def test_search_no_results(monkeypatch, capsys):
     output = capsys.readouterr().out
 
     assert "No matching applications found." in output
+
+
+def test_add_application_normalizes_input(monkeypatch):
+    applications = []
+
+    inputs = iter([
+        "   google   ",
+        "   machine    learning   engineer   ",
+        "   applied   "
+    ])
+
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda _: next(inputs)
+    )
+
+    monkeypatch.setattr(
+        "application_manager.save_applications",
+        lambda applications: None
+    )
+
+    application_manager.add_application(applications)
+
+    assert applications[0]["company"] == "Google"
+    assert applications[0]["role"] == "Machine Learning Engineer"
+    assert applications[0]["status"] == "Applied"
