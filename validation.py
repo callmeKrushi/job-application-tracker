@@ -23,3 +23,17 @@ def validate_status(status):
             return valid_status
 
     return None
+
+
+def validate_salary(salary):
+    salary = salary.strip()
+
+    # Salary is optional
+    if not salary:
+        return True
+
+    # Salary must contain at least one digit
+    if not any(character.isdigit() for character in salary):
+        return False
+
+    return True

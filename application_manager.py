@@ -2,7 +2,8 @@ from storage import save_applications
 from validation import (
     normalize_text,
     validate_text,
-    validate_status
+    validate_status,
+    validate_salary
 )
 from date_utils import get_current_date
 
@@ -13,6 +14,9 @@ def add_application(applications):
     location = input("Enter location (optional): ")
     job_type = input("Enter job type (optional): ")
     salary = input("Enter salary (optional): ")
+    if not validate_salary(salary):
+        print("Invalid salary. Please enter a valid salary.")
+        return
     job_url = input("Enter job URL (optional): ")
     notes = input("Enter notes (optional): ")
     status = input(
