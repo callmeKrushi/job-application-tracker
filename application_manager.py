@@ -3,7 +3,8 @@ from validation import (
     normalize_text,
     validate_text,
     validate_status,
-    validate_salary
+    validate_salary,
+    validate_job_type
 )
 from date_utils import get_current_date
 
@@ -12,11 +13,24 @@ def add_application(applications):
     company = input("Enter company name: ")
     role = input("Enter job role: ")
     location = input("Enter location (optional): ")
+
     job_type = input("Enter job type (optional): ")
+
+    validated_job_type = validate_job_type(job_type)
+
+    if validated_job_type is None:
+        print(
+            "Invalid job type. Choose Full-time, Part-time, "
+            "Internship, Contract, Freelance, or Temporary."
+        )
+        return
+    
     salary = input("Enter salary (optional): ")
+
     if not validate_salary(salary):
         print("Invalid salary. Please enter a valid salary.")
         return
+    
     job_url = input("Enter job URL (optional): ")
     notes = input("Enter notes (optional): ")
     status = input(
@@ -45,7 +59,7 @@ def add_application(applications):
         "company": company,
         "role": role,
         "location": location.strip(),
-        "job_type": job_type.strip(),
+        "job_type": validated_job_type,
         "salary": salary.strip(),
         "job_url": job_url.strip(),
         "notes": notes.strip(),

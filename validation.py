@@ -37,3 +37,25 @@ def validate_salary(salary):
         return False
 
     return True
+
+VALID_JOB_TYPES = [
+    "Full-time",
+    "Part-time",
+    "Internship",
+    "Contract",
+    "Freelance",
+    "Temporary"
+]
+
+def validate_job_type(job_type):
+    job_type = job_type.strip()
+
+    # Job type is optional
+    if not job_type:
+        return ""
+
+    for valid_type in VALID_JOB_TYPES:
+        if job_type.lower() == valid_type.lower():
+            return valid_type
+
+    return None
