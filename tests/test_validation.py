@@ -1,4 +1,4 @@
-from validation import validate_salary
+from validation import validate_salary, validate_job_type, validate_url
 
 
 def test_validate_salary_with_valid_lpa():
@@ -40,3 +40,24 @@ def test_validate_job_type_with_empty_input():
 
 def test_validate_job_type_with_invalid_input():
     assert validate_job_type("abcxyz") is None
+
+
+
+def test_validate_url_with_https():
+    assert validate_url("https://example.com/job") is True
+
+
+def test_validate_url_with_http():
+    assert validate_url("http://example.com/job") is True
+
+
+def test_validate_url_with_empty_input():
+    assert validate_url("") is True
+
+
+def test_validate_url_with_invalid_text():
+    assert validate_url("hello") is False
+
+
+def test_validate_url_without_protocol():
+    assert validate_url("example.com") is False

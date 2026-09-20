@@ -59,3 +59,16 @@ def validate_job_type(job_type):
             return valid_type
 
     return None
+
+
+def validate_url(url):
+    url = url.strip()
+
+    # Job URL is optional
+    if not url:
+        return True
+
+    if url.startswith("http://") or url.startswith("https://"):
+        return True
+
+    return False
