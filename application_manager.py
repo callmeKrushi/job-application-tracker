@@ -4,7 +4,8 @@ from validation import (
     validate_text,
     validate_status,
     validate_salary,
-    validate_job_type
+    validate_job_type,
+    validate_url
 )
 from date_utils import get_current_date
 
@@ -32,6 +33,12 @@ def add_application(applications):
         return
     
     job_url = input("Enter job URL (optional): ")
+
+    if not validate_url(job_url):
+        print("Invalid URL. Please enter a valid HTTP or HTTPS URL.")
+        return
+
+    
     notes = input("Enter notes (optional): ")
     status = input(
         "Enter application status "
