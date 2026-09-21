@@ -11,7 +11,13 @@ def load_applications():
             if not content:
                 return []
 
-            return json.loads(content)
+            applications = json.loads(content)
+
+            if not isinstance(applications, list):
+                print("Error: Applications data must be a list.")
+                return []
+
+            return applications
 
     except FileNotFoundError:
         return []
@@ -22,5 +28,13 @@ def load_applications():
 
 
 def save_applications(applications):
-    with open(FILE_NAME, "w") as file:
-        json.dump(applications, file, indent=4)
+    if not isinstance(applications, list):
+        print("Error: Applications data must be a list.")
+        return
+
+    try:
+        with open(FILE_NAME, "w") as file:
+            json.dump(applications, file, indent=4)
+
+    except OSError:
+        print("Error: Could not save applications.")

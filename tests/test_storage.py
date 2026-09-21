@@ -60,3 +60,46 @@ def test_load_applications_when_json_is_invalid(tmp_path, capsys):
 
     assert applications == []
     assert "invalid JSON" in captured.out
+
+
+def test_load_applications_when_json_is_not_a_list(tmp_path, capsys):
+    import storage
+
+    file_path = tmp_path / "invalid_structure.json"
+    file_path.write_text('{"company": "Google"}')
+
+    storage.FILE_NAME = str(file_path)
+
+    applications = load_applications()
+
+    captured = capsys.readouterr()
+
+    assert applications == []
+    assert "must be a list" in captured.out
+
+
+def test_save_applications_when_file_cannot_be_written(tmp_path, capsys):
+    import storage
+
+    file_path = tmp_path / "missing_folder" / "applications.json"
+    storage.FILE_NAME = str(file_path)
+
+    save_applications([])
+
+    captured = capsys.readouterr()
+
+    assert "Could not save applications" in captured.out
+
+
+def test_save_applications_when_data_is_not_a_list(tmp_path, capsys):
+    import storage
+
+    file_path = tmp_path / "applications.json"
+    storage.FILE_NAME = str(file_path)
+
+    save_applications({"company": "Google"})
+
+    captured = capsys.readouterr()
+
+    assert "must be a list" in captured.out
+    assert not file_path.exists()
