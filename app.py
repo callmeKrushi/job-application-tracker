@@ -1,4 +1,5 @@
-from storage import load_applications
+import database
+
 from application_manager import (
     add_application,
     view_applications,
@@ -27,8 +28,8 @@ def show_menu():
 
 
 def main():
-    applications = load_applications()
 
+    database.create_table()
     running = True
 
     while running:
@@ -37,35 +38,38 @@ def main():
         choice = input("Enter your choice: ")
 
         if choice == "1":
-            add_application(applications)
+            add_application()
 
         elif choice == "2":
-            view_applications(applications)
+            view_applications()
 
         elif choice == "3":
-            update_status(applications)
+            update_status()
 
         elif choice == "4":
-            delete_application(applications)
+            delete_application()
 
         elif choice == "5":
-            search_applications(applications)
+            search_applications()
 
         elif choice == "6":
-            filter_applications(applications)
+            filter_applications()
 
         elif choice == "7":
-            sort_applications(applications)
+            sort_applications()
 
         elif choice == "8":
-            edit_application(applications)
+            edit_application()
 
         elif choice == "9":
             print("Thank you for using Job Application Tracker!")
             running = False
 
         else:
-            print("Invalid choice. Please enter a number from 1 to 9.")
+            print(
+                "Invalid choice. "
+                "Please enter a number from 1 to 9."
+            )
 
 
 if __name__ == "__main__":
