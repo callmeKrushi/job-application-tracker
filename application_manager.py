@@ -179,43 +179,27 @@ def delete_application():
 
 
 def search_applications():
-    applications = database.get_applications()
-
-    if not applications:
-        print("\nNo applications found.")
-        return
-
     search_term = input(
         "Enter company or role to search: "
     ).strip().lower()
 
-    found = False
+    applications = database.search_applications(search_term)
 
     print("\n---------------------------------")
     print("      Search Results")
     print("---------------------------------")
 
-    for index, application in enumerate(applications, start=1):
-        if (
-            search_term in application["company"].lower()
-            or search_term in application["role"].lower()
-        ):
-            display_application(application, index)
-            found = True
-
-    if not found:
+    if not applications:
         print("\nNo matching applications found.")
+    else:
+        for index, application in enumerate(applications, start=1):
+            display_application(application, index)
 
     print("\n---------------------------------")
 
 
+
 def filter_applications():
-    applications = database.get_applications()
-
-    if not applications:
-        print("\nNo applications found.")
-        return
-
     status = input(
         "Enter status to filter "
         "(Applied/Interview/Selected/Rejected/Withdrawn): "
@@ -227,21 +211,19 @@ def filter_applications():
         print("Invalid application status.")
         return
 
-    found = False
+    applications = database.filter_applications(status)
 
     print("\n---------------------------------")
     print("     Filtered Applications")
     print("---------------------------------")
 
-    for index, application in enumerate(applications, start=1):
-        if application["status"] == status:
-            display_application(application, index)
-            found = True
-
-    if not found:
+    if not applications:
         print(
             f"\nNo applications with status '{status}' found."
         )
+    else:
+        for index, application in enumerate(applications, start=1):
+            display_application(application, index)
 
     print("\n---------------------------------")
 
@@ -259,17 +241,10 @@ def sort_applications():
     choice = input("Enter your choice: ")
 
     if choice == "1":
-        sorted_applications = sorted(
-            applications,
-            key=lambda application: application["date_applied"],
-            reverse=True
-        )
+        sorted_applications = database.sort_applications("desc")
 
     elif choice == "2":
-        sorted_applications = sorted(
-            applications,
-            key=lambda application: application["date_applied"]
-        )
+        sorted_applications = database.sort_applications("asc")
 
     else:
         print("Invalid choice.")
