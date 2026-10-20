@@ -1,18 +1,5 @@
-
 import application_manager
 import database
-
-
-def setup_database(tmp_path, monkeypatch):
-    database_path = tmp_path / "test.db"
-
-    monkeypatch.setattr(
-        database,
-        "DATABASE_NAME",
-        str(database_path)
-    )
-
-    database.create_table()
 
 
 def add_test_application(
@@ -39,8 +26,7 @@ def add_test_application(
     )
 
 
-def test_add_application(monkeypatch, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_add_application(monkeypatch, test_database):
 
     inputs = iter([
         "Google",
@@ -73,8 +59,7 @@ def test_add_application(monkeypatch, tmp_path):
     assert applications[0]["status"] == "Applied"
 
 
-def test_add_application_normalizes_input(monkeypatch, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_add_application_normalizes_input(monkeypatch, test_database):
 
     inputs = iter([
         "   google   ",
@@ -101,8 +86,7 @@ def test_add_application_normalizes_input(monkeypatch, tmp_path):
     assert applications[0]["status"] == "Applied"
 
 
-def test_update_status(monkeypatch, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_update_status(monkeypatch, test_database):
 
     add_test_application(
         "Google",
@@ -133,8 +117,7 @@ def test_update_status(monkeypatch, tmp_path):
     assert applications[0]["status"] == "Interview"
 
 
-def test_update_status_invalid_number(monkeypatch, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_update_status_invalid_number(monkeypatch, test_database):
 
     add_test_application(
         "Google",
@@ -160,8 +143,7 @@ def test_update_status_invalid_number(monkeypatch, tmp_path):
     assert applications[0]["status"] == "Applied"
 
 
-def test_delete_application(monkeypatch, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_delete_application(monkeypatch, test_database):
 
     add_test_application(
         "Google",
@@ -200,8 +182,7 @@ def test_delete_application(monkeypatch, tmp_path):
     assert applications[0]["company"] == "Microsoft"
 
 
-def test_delete_application_invalid_number(monkeypatch, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_delete_application_invalid_number(monkeypatch, test_database):
 
     add_test_application(
         "Google",
@@ -228,8 +209,7 @@ def test_delete_application_invalid_number(monkeypatch, tmp_path):
     assert applications[0]["company"] == "Google"
 
 
-def test_search_applications(monkeypatch, capsys, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_search_applications(monkeypatch, capsys, test_database):
 
     add_test_application(
         "Google",
@@ -269,8 +249,7 @@ def test_search_applications(monkeypatch, capsys, tmp_path):
     assert "Microsoft" not in output
 
 
-def test_search_no_results(monkeypatch, capsys, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_search_no_results(monkeypatch, capsys, test_database):
 
     add_test_application(
         "Google",
@@ -296,8 +275,7 @@ def test_search_no_results(monkeypatch, capsys, tmp_path):
     assert "No matching applications found." in output
 
 
-def test_filter_applications(monkeypatch, capsys, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_filter_applications(monkeypatch, capsys, test_database):
 
     add_test_application(
         "Google",
@@ -352,9 +330,8 @@ def test_filter_applications(monkeypatch, capsys, tmp_path):
 def test_filter_applications_no_results(
     monkeypatch,
     capsys,
-    tmp_path
+    test_database
 ):
-    setup_database(tmp_path, monkeypatch)
 
     add_test_application(
         "Google",
@@ -383,9 +360,8 @@ def test_filter_applications_no_results(
 def test_sort_applications_newest_first(
     monkeypatch,
     capsys,
-    tmp_path
+    test_database
 ):
-    setup_database(tmp_path, monkeypatch)
 
     add_test_application(
         "Google",
@@ -443,9 +419,8 @@ def test_sort_applications_newest_first(
 def test_sort_applications_oldest_first(
     monkeypatch,
     capsys,
-    tmp_path
+    test_database
 ):
-    setup_database(tmp_path, monkeypatch)
 
     add_test_application(
         "Google",
@@ -500,8 +475,7 @@ def test_sort_applications_oldest_first(
     assert amazon_position < microsoft_position
 
 
-def test_edit_application(monkeypatch, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_edit_application(monkeypatch, test_database):
 
     add_test_application(
         "Google",
@@ -549,9 +523,8 @@ def test_edit_application(monkeypatch, tmp_path):
 
 def test_edit_application_keep_existing_values(
     monkeypatch,
-    tmp_path
+    test_database
 ):
-    setup_database(tmp_path, monkeypatch)
 
     add_test_application(
         "Google",
@@ -599,9 +572,8 @@ def test_edit_application_keep_existing_values(
 
 def test_edit_application_invalid_status(
     monkeypatch,
-    tmp_path
+    test_database
 ):
-    setup_database(tmp_path, monkeypatch)
 
     add_test_application(
         "Google",
@@ -643,8 +615,7 @@ def test_edit_application_invalid_status(
 
 
 
-def test_update_status_non_numeric_input(monkeypatch, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_update_status_non_numeric_input(monkeypatch, test_database):
 
     add_test_application(
         "Google", "Python Developer", "Hyderabad", "Full-time",
@@ -665,8 +636,7 @@ def test_update_status_non_numeric_input(monkeypatch, tmp_path):
     assert applications[0]["status"] == "Applied"
 
 
-def test_delete_application_non_numeric_input(monkeypatch, tmp_path):
-    setup_database(tmp_path, monkeypatch)
+def test_delete_application_non_numeric_input(monkeypatch, test_database):
 
     add_test_application(
         "Google", "Python Developer", "Hyderabad", "Full-time",
@@ -688,9 +658,8 @@ def test_delete_application_non_numeric_input(monkeypatch, tmp_path):
 
 
 def test_sort_applications_with_empty_database(
-    monkeypatch, capsys, tmp_path
+    monkeypatch, capsys, test_database
 ):
-    setup_database(tmp_path, monkeypatch)
 
     application_manager.sort_applications()
 

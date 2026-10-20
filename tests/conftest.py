@@ -1,4 +1,3 @@
-
 import sys
 from pathlib import Path
 
@@ -21,5 +20,4 @@ def test_database(tmp_path, monkeypatch):
     )
 
     database.create_table()
-
     return database
