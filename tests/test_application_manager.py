@@ -641,3 +641,59 @@ def test_edit_application_invalid_status(
     assert applications[0]["location"] == "Hyderabad"
     assert applications[0]["status"] == "Applied"
 
+
+
+def test_update_status_non_numeric_input(monkeypatch, tmp_path):
+    setup_database(tmp_path, monkeypatch)
+
+    add_test_application(
+        "Google", "Python Developer", "Hyderabad", "Full-time",
+        "12 LPA", "https://example.com", "Referral",
+        "Applied", "2026-09-19"
+    )
+
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda _: "abc"
+    )
+
+    application_manager.update_status()
+
+    applications = database.get_applications()
+
+    assert len(applications) == 1
+    assert applications[0]["status"] == "Applied"
+
+
+def test_delete_application_non_numeric_input(monkeypatch, tmp_path):
+    setup_database(tmp_path, monkeypatch)
+
+    add_test_application(
+        "Google", "Python Developer", "Hyderabad", "Full-time",
+        "12 LPA", "https://example.com", "Referral",
+        "Applied", "2026-09-19"
+    )
+
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda _: "abc"
+    )
+
+    application_manager.delete_application()
+
+    applications = database.get_applications()
+
+    assert len(applications) == 1
+    assert applications[0]["company"] == "Google"
+
+
+def test_sort_applications_with_empty_database(
+    monkeypatch, capsys, tmp_path
+):
+    setup_database(tmp_path, monkeypatch)
+
+    application_manager.sort_applications()
+
+    output = capsys.readouterr().out
+
+    assert "No applications" in output
