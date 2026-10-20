@@ -247,3 +247,117 @@ def test_get_db_closes_connection_on_error(test_database):
         assert "closed" in str(error).lower()
     else:
         raise AssertionError("Connection should be closed")
+
+
+
+def test_search_applications(test_database):
+    test_database.add_application(
+        "Google", "Python Developer", "Hyderabad", "Full-time",
+        "10 LPA", "https://example.com/google", "Python role",
+        "Applied", "2026-10-02"
+    )
+
+    test_database.add_application(
+        "Microsoft", "Data Analyst", "Bengaluru", "Full-time",
+        "12 LPA", "https://example.com/microsoft", "Data role",
+        "Applied", "2026-10-03"
+    )
+
+    results = test_database.search_applications("Google")
+
+    assert len(results) == 1
+    assert results[0]["company"] == "Google"
+    assert results[0]["role"] == "Python Developer"
+
+
+
+def test_filter_applications(test_database):
+    test_database.add_application(
+        "Google", "Python Developer", "Hyderabad", "Full-time",
+        "10 LPA", "https://example.com/google", "Python role",
+        "Applied", "2026-10-02"
+    )
+
+    test_database.add_application(
+        "Microsoft", "Data Analyst", "Bengaluru", "Full-time",
+        "12 LPA", "https://example.com/microsoft", "Data role",
+        "Interview", "2026-10-03"
+    )
+
+    results = test_database.filter_applications("Interview")
+
+    assert len(results) == 1
+    assert results[0]["company"] == "Microsoft"
+    assert results[0]["status"] == "Interview"
+
+
+
+def test_sort_applications(test_database):
+    test_database.add_application(
+        "Google", "Python Developer", "Hyderabad", "Full-time",
+        "10 LPA", "https://example.com/google", "Python role",
+        "Applied", "2026-10-02"
+    )
+
+    test_database.add_application(
+        "Microsoft", "Data Analyst", "Bengaluru", "Full-time",
+        "12 LPA", "https://example.com/microsoft", "Data role",
+        "Applied", "2026-10-05"
+    )
+
+    test_database.add_application(
+        "Amazon", "Backend Developer", "Chennai", "Full-time",
+        "11 LPA", "https://example.com/amazon", "Backend role",
+        "Applied", "2026-10-03"
+    )
+
+    results = test_database.sort_applications("desc")
+
+    assert len(results) == 3
+    assert results[0]["company"] == "Microsoft"
+    assert results[1]["company"] == "Amazon"
+    assert results[2]["company"] == "Google"
+
+
+
+def test_search_applications_returns_empty_list_when_no_match(test_database):
+    test_database.add_application(
+        "Google", "Python Developer", "Hyderabad", "Full-time",
+        "10 LPA", "https://example.com/google", "Python role",
+        "Applied", "2026-10-02"
+    )
+
+    results = test_database.search_applications("NonexistentCompany")
+
+    assert results == []
+
+
+def test_search_applications_matches_partial_role(test_database):
+    test_database.add_application(
+        "Google", "Python Developer", "Hyderabad", "Full-time",
+        "10 LPA", "https://example.com/google", "Python role",
+        "Applied", "2026-10-02"
+    )
+
+    results = test_database.search_applications("Python")
+
+    assert len(results) == 1
+    assert results[0]["company"] == "Google"
+
+
+def test_filter_applications_returns_empty_list_when_no_match(test_database):
+    test_database.add_application(
+        "Google", "Python Developer", "Hyderabad", "Full-time",
+        "10 LPA", "https://example.com/google", "Python role",
+        "Applied", "2026-10-02"
+    )
+
+    results = test_database.filter_applications("Rejected")
+
+    assert results == []
+
+
+def test_sort_applications_returns_empty_list_when_no_applications(test_database):
+    results = test_database.sort_applications("desc")
+
+    assert results == []
