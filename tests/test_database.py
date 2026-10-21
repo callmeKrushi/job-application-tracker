@@ -361,3 +361,46 @@ def test_sort_applications_returns_empty_list_when_no_applications(test_database
     results = test_database.sort_applications("desc")
 
     assert results == []
+
+
+
+def test_get_db_commits_on_success(test_database):
+    with test_database.get_db() as connection:
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            INSERT INTO applications (
+                company,
+                role,
+                status,
+                date_applied
+            )
+            VALUES (?, ?, ?, ?)
+        """, (
+            "Google",
+            "Python Developer",
+            "Applied",
+            "2026-10-11"
+        ))
+
+    applications = test_database.get_applications()
+
+    assert len(applications) == 1
+    assert applications[0]["company"] == "Google"
+
+
+def test_get_db_closes_connection_on_success(test_database):
+    connection = None
+
+    with test_database.get_db() as db_connection:
+        connection = db_connection
+        db_connection.execute("SELECT 1")
+
+    assert connection is not None
+
+    try:
+        connection.execute("SELECT 1")
+    except sqlite3.ProgrammingError as error:
+        assert "closed" in str(error).lower()
+    else:
+        raise AssertionError("Connection should be closed")
