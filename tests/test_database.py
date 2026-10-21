@@ -404,3 +404,40 @@ def test_get_db_closes_connection_on_success(test_database):
         assert "closed" in str(error).lower()
     else:
         raise AssertionError("Connection should be closed")
+
+
+
+
+def test_get_db_rolls_back_when_commit_fails(test_database, monkeypatch):
+    class FakeConnection:
+        def __init__(self):
+            self.rollback_called = False
+            self.close_called = False
+
+        def commit(self):
+            raise RuntimeError("Simulated commit failure")
+
+        def rollback(self):
+            self.rollback_called = True
+
+        def close(self):
+            self.close_called = True
+
+    fake_connection = FakeConnection()
+
+    monkeypatch.setattr(
+        test_database,
+        "get_connection",
+        lambda: fake_connection
+    )
+
+    try:
+        with test_database.get_db():
+            pass
+    except RuntimeError as error:
+        assert str(error) == "Simulated commit failure"
+    else:
+        raise AssertionError("Commit failure should propagate")
+
+    assert fake_connection.rollback_called
+    assert fake_connection.close_called
