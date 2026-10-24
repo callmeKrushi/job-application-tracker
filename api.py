@@ -160,6 +160,24 @@ def list_applications(
         handle_database_error()
 
 
+@app.get("/stats")
+def get_stats():
+    return database.get_application_stats()
+
+
+
+@app.get("/stats/response-rate")
+def get_response_rate_stats():
+    return database.get_response_rate()
+
+
+
+@app.get("/stats/monthly")
+def get_monthly_stats():
+    return database.get_monthly_application_stats()
+
+
+
 @app.get("/applications/{application_id}")
 def get_application(application_id: int):
     try:

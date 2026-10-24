@@ -115,6 +115,89 @@ def get_applications():
     return [row_to_application(row) for row in rows]
 
 
+
+def get_application_stats():
+    """Return total applications and counts grouped by status."""
+    with get_db() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT
+                    COUNT(*) AS total,
+                    COUNT(*) FILTER (WHERE status = 'Applied') AS applied,
+                    COUNT(*) FILTER (WHERE status = 'Interview') AS interview,
+                    COUNT(*) FILTER (WHERE status = 'Selected') AS selected,
+                    COUNT(*) FILTER (WHERE status = 'Rejected') AS rejected,
+                    COUNT(*) FILTER (WHERE status = 'Withdrawn') AS withdrawn
+                FROM applications
+                """
+            )
+            row = cursor.fetchone()
+
+    return {
+        "total": row[0],
+        "applied": row[1],
+        "interview": row[2],
+        "selected": row[3],
+        "rejected": row[4],
+        "withdrawn": row[5],
+    }
+
+
+
+def get_response_rate():
+    """Return the number and percentage of applications with a response."""
+    with get_db() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT
+                    COUNT(*) AS total,
+                    COUNT(*) FILTER (
+                        WHERE status IN ('Interview', 'Selected', 'Rejected')
+                    ) AS responded
+                FROM applications
+                """
+            )
+            row = cursor.fetchone()
+
+    total = row[0]
+    responded = row[1]
+    response_rate = (responded / total * 100) if total else 0.0
+
+    return {
+        "total": total,
+        "responded": responded,
+        "response_rate": round(response_rate, 2),
+    }
+
+
+def get_monthly_application_stats():
+    """Return the number of applications submitted each month."""
+    with get_db() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT
+                    TO_CHAR(
+                        TO_DATE(date_applied, 'YYYY-MM-DD'),
+                        'YYYY-MM'
+                    ) AS month,
+                    COUNT(*) AS total
+                FROM applications
+                GROUP BY month
+                ORDER BY month
+                """
+            )
+            rows = cursor.fetchall()
+
+    return [
+        {"month": row[0], "total": row[1]}
+        for row in rows
+    ]
+
+
+
 def search_applications(search_term):
     pattern = f"%{search_term}%"
     with get_db() as connection:

@@ -244,3 +244,158 @@ def test_delete_nonexistent_application(client):
     response = client.delete("/applications/999999")
 
     assert response.status_code == 404
+
+
+
+def test_get_stats_empty_database(client):
+    response = client.get("/stats")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "total": 0,
+        "applied": 0,
+        "interview": 0,
+        "selected": 0,
+        "rejected": 0,
+        "withdrawn": 0,
+    }
+
+
+def test_get_stats_with_applications(client):
+    client.post(
+        "/applications",
+        json={
+            "company": "Google",
+            "role": "Python Developer",
+            "status": "Applied",
+            "date_applied": "2026-10-20",
+        },
+    )
+    client.post(
+        "/applications",
+        json={
+            "company": "Microsoft",
+            "role": "Backend Developer",
+            "status": "Interview",
+            "date_applied": "2026-10-21",
+        },
+    )
+
+    response = client.get("/stats")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "total": 2,
+        "applied": 1,
+        "interview": 1,
+        "selected": 0,
+        "rejected": 0,
+        "withdrawn": 0,
+    }
+
+
+
+def test_response_rate_empty_database(client):
+    response = client.get("/stats/response-rate")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "total": 0,
+        "responded": 0,
+        "response_rate": 0.0,
+    }
+
+
+def test_response_rate_with_mixed_statuses(client):
+    for company, status in [
+        ("Google", "Applied"),
+        ("Microsoft", "Interview"),
+        ("Amazon", "Rejected"),
+        ("Infosys", "Selected"),
+    ]:
+        result = client.post(
+            "/applications",
+            json={
+                "company": company,
+                "role": "Software Developer",
+                "status": status,
+                "date_applied": "2026-10-24",
+            },
+        )
+        assert result.status_code == 201
+
+    response = client.get("/stats/response-rate")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "total": 4,
+        "responded": 3,
+        "response_rate": 75.0,
+    }
+
+
+def test_response_rate_with_only_applied_status(client):
+    result = client.post(
+        "/applications",
+        json={
+            "company": "Test Company",
+            "role": "Python Developer",
+            "status": "Applied",
+            "date_applied": "2026-10-24",
+        },
+    )
+    assert result.status_code == 201
+
+    response = client.get("/stats/response-rate")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "total": 1,
+        "responded": 0,
+        "response_rate": 0.0,
+    }
+
+
+
+def test_monthly_stats_empty_database(client):
+    response = client.get("/stats/monthly")
+
+    assert response.status_code == 200
+    assert response.json() == []
+
+
+def test_monthly_stats_groups_applications_by_month(client):
+    applications = [
+        {
+            "company": "Google",
+            "role": "Python Developer",
+            "status": "Applied",
+            "date_applied": "2026-09-10",
+        },
+        {
+            "company": "Microsoft",
+            "role": "Backend Developer",
+            "status": "Interview",
+            "date_applied": "2026-09-25",
+        },
+        {
+            "company": "Amazon",
+            "role": "Software Developer",
+            "status": "Applied",
+            "date_applied": "2026-10-05",
+        },
+    ]
+
+    for application in applications:
+        result = client.post("/applications", json=application)
+        assert result.status_code == 201
+
+    response = client.get("/stats/monthly")
+
+    assert response.status_code == 200
+    assert response.json() == [
+        {"month": "2026-09", "total": 2},
+        {"month": "2026-10", "total": 1},
+    ]
+
+
