@@ -64,7 +64,8 @@ def create_table():
                     job_url TEXT,
                     notes TEXT,
                     status TEXT NOT NULL,
-                    date_applied TEXT NOT NULL
+                    date_applied TEXT NOT NULL,
+                    follow_up_date DATE
                 )
                 """
             )
@@ -86,6 +87,7 @@ def add_application(
     notes,
     status,
     date_applied,
+    follow_up_date=None,
 ):
     with get_db() as connection:
         with connection.cursor() as cursor:
@@ -93,14 +95,14 @@ def add_application(
                 """
                 INSERT INTO applications (
                     company, role, location, job_type, salary,
-                    job_url, notes, status, date_applied
+                    job_url, notes, status, date_applied, follow_up_date
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING id
                 """,
                 (
                     company, role, location, job_type, salary,
-                    job_url, notes, status, date_applied,
+                    job_url, notes, status, date_applied, follow_up_date,
                 ),
             )
             application_id = cursor.fetchone()[0]
@@ -270,6 +272,7 @@ def update_application(
     job_url,
     notes,
     status,
+    follow_up_date=None,
 ):
     with get_db() as connection:
         with connection.cursor() as cursor:
@@ -283,12 +286,13 @@ def update_application(
                     salary = %s,
                     job_url = %s,
                     notes = %s,
-                    status = %s
+                    status = %s,
+                    follow_up_date = %s
                 WHERE id = %s
                 """,
                 (
                     company, role, location, job_type, salary,
-                    job_url, notes, status, application_id,
+                    job_url, notes, status, follow_up_date, application_id,
                 ),
             )
             rows_updated = cursor.rowcount
@@ -308,6 +312,7 @@ def row_to_application(row):
         "notes": row[7],
         "status": row[8],
         "date_applied": row[9],
+        "follow_up_date": row[10].isoformat() if row[10] else None,
     }
 
 
@@ -361,7 +366,8 @@ def migrate_database():
                     ADD COLUMN IF NOT EXISTS salary TEXT,
                     ADD COLUMN IF NOT EXISTS job_url TEXT,
                     ADD COLUMN IF NOT EXISTS notes TEXT,
-                    ADD COLUMN IF NOT EXISTS date_applied TEXT
+                    ADD COLUMN IF NOT EXISTS date_applied TEXT,
+                    ADD COLUMN IF NOT EXISTS follow_up_date DATE
                 """
             )
             cursor.execute(

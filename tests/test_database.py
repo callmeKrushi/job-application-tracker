@@ -53,6 +53,7 @@ def test_add_application(test_database):
         "notes": "Python role",
         "status": "Applied",
         "date_applied": "2026-10-02",
+        "follow_up_date": None,
     }
 
 
@@ -130,7 +131,7 @@ def test_migrate_database(test_database):
 
     assert column_names == [
         "id", "company", "role", "status", "location", "job_type",
-        "salary", "job_url", "notes", "date_applied"
+        "salary", "job_url", "notes", "date_applied", "follow_up_date",
     ]
     assert len(applications) == 1
     assert applications[0][1] == "Google"

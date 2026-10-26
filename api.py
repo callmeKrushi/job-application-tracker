@@ -4,6 +4,7 @@ from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Query, Response
 from pydantic import BaseModel, Field, HttpUrl
+from fastapi.middleware.cors import CORSMiddleware
 
 import database
 
@@ -16,6 +17,16 @@ app = FastAPI(
     title="Job Application Tracker API",
     description="REST API for managing job applications",
     version="1.0.0",
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -57,6 +68,7 @@ class ApplicationCreate(BaseModel):
 
     status: ApplicationStatus = "Applied"
     date_applied: date = Field(default_factory=date.today)
+    follow_up_date: date | None = None
 
 
 class ApplicationUpdate(BaseModel):
@@ -70,6 +82,7 @@ class ApplicationUpdate(BaseModel):
     job_url: HttpUrl | None = None
     notes: str | None = None
     status: ApplicationStatus | None = None
+    follow_up_date: date | None = None
 
 
 class StatusUpdate(BaseModel):
@@ -214,6 +227,7 @@ def create_application(application: ApplicationCreate):
             clean_optional_text(application.notes),
             application.status,
             application.date_applied.isoformat(),
+            application.follow_up_date,
         )
 
         return {
@@ -267,6 +281,7 @@ def edit_application(
         job_url = updates.get("job_url", existing["job_url"])
         notes = updates.get("notes", existing["notes"])
         status = updates.get("status", existing["status"])
+        follow_up_date = updates.get("follow_up_date", existing.get("follow_up_date"))
 
         if "job_url" in updates:
             job_url = (
@@ -285,6 +300,7 @@ def edit_application(
             clean_optional_text(job_url),
             clean_optional_text(notes),
             status,
+            follow_up_date,
         )
 
         if rows_updated == 0:
